@@ -1,0 +1,189 @@
+﻿.alert-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: none;
+    padding: 1.0rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    background: linear-gradient(135deg, #e11d48, #b91c1c);
+    animation: fadeInOut 3s ease-in-out;
+}
+
+    .alert-popup.show {
+        display: block;
+    }
+
+    .alert-popup i {
+        margin-right: 10px;
+    }
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+
+.Message-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: none;
+    padding: 1.0rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff; /* Text color */
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8); /* Updated gradient with lighter blue */
+    animation: fadeInOut 3s ease-in-out;
+    max-width: 350px; /* Adjust as needed */
+}
+
+    .Message-popup.show {
+        display: block;
+    }
+
+    .Message-popup i {
+        margin-right: 10px;
+    }
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.Message-popup p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+
+
+
+
+
+.confirm-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    display: none;
+    padding: 1rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    color: #333;
+    width: 300px;
+}
+
+    .confirm-popup.show {
+        display: block;
+    }
+
+    .confirm-popup .popup-content {
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .confirm-popup .btn-group {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .confirm-popup .btn-group .btn {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .confirm-popup .btn-group .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+            .confirm-popup .btn-group .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+            }
+
+        .confirm-popup .btn-group .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+            .confirm-popup .btn-group .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+
+
+#ticketPopup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }

@@ -1,0 +1,71 @@
+﻿@model E_starta.Models.LoginModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="~/LoginStyleSheet.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/AlertPopupStyleSheet.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="login-container">
+        <h2>Wellcome</h2>
+        <form asp-action="Index" asp-controller="Login" method="post" class="form-group" id="loginForm">
+            <div class="form-group">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" name="EmailTextBox" placeholder="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" name="PasswordTextBox" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+
+    @if (Model?.result?.ErrorMessage != null)
+    {
+        <div class="alert-popup show" id="ErrorPopup">
+            <p><i class="fas fa-exclamation-triangle"></i> @Model.result.ErrorMessage</p>
+        </div>
+    }
+    @if (Model?.result?.Message != null)
+    {
+        <div class="Message-popup show" id="MessagePopup">
+            <p><i class="fas fa-exclamation-triangle"></i> @Model.result.Message</p>
+        </div>
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var errorPopup = document.getElementById('ErrorPopup');
+            var messagePopup = document.getElementById('MessagePopup');
+
+            if (errorPopup) {
+                // Add the show class to display the alert
+                errorPopup.classList.add('show');
+                // Hide the alert after 2 seconds
+                setTimeout(function () {
+                    errorPopup.classList.remove('show');
+                }, 2500); // 2000 milliseconds = 2 seconds
+            }
+
+            if (messagePopup) {
+                messagePopup.classList.add('show');
+                setTimeout(function () {
+                    messagePopup.classList.remove('show');
+                }, 2500);
+            }
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

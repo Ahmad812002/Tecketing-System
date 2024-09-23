@@ -1,0 +1,188 @@
+﻿@model E_starta.Models.EmployeeModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <link href="~/EmployeeStyleSheet.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/AlertPopupStyleSheet.css" rel="stylesheet" asp-append-version="true">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        @if (Model == null)
+        {
+            <p>Error: Model or tickets are null</p>
+        }
+        else
+        {
+            <form method="get" asp-action="Index">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Ticket Title</th>
+                                <th>Employye Id</th>
+                                <th>Name</th> <!-- User Name -->
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var ticket in Model.tickets)
+                            {
+                                <tr>
+                                    <td>@ticket.Title</td>
+                                    <td>@ticket.EmployeeId</td>
+                                    <td>
+                                    @using(Html.BeginForm("ShowTicketDetails", "Employee", FormMethod.Post))
+                                    {
+                                            @if (@ticket.ResolvedAt == null)
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-info btn-sm show-popup-btn"
+                                                        data-ticket-id="@ticket.Id"
+                                                        data-ticket-description="@ticket.Description"
+                                                        data-ticket-status="@ticket.Status"
+                                                        data-ticket-created="@ticket.CreatedAt"
+                                                        data-ticket-resolved="still not solved">
+                                                    Show Ticket Details
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button"
+                                                        class="btn btn-info btn-sm show-popup-btn"
+                                                        data-ticket-id="@ticket.Id"
+                                                        data-ticket-description="@ticket.Description"
+                                                        data-ticket-status="@ticket.Status"
+                                                        data-ticket-created="@ticket.CreatedAt"
+                                                        data-ticket-resolved="@ticket.ResolvedAt">
+                                                    Show Ticket Details
+                                                </button>
+                                            }
+                                        <input type="hidden" name="Status" value="@ticket.Status" />
+                                    }
+                                    </td>
+                                <td>
+                                    <div class="btn-group">
+                                        @using (Html.BeginForm("AssignTicket", "Employee", FormMethod.Post))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="ticketId" value="@ticket.Id" />
+                                            <input type="hidden" name="employeeId" value="@ticket.EmployeeId" />
+                                            <input type="hidden" name="employeeID" value="@Model.user.Id" />
+                                            <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+                                        }
+                                            @using (Html.BeginForm("Solved", "Employee", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="ticketId" value="@ticket.Id" />
+                                                <input type="hidden" name="employeeId" value="@ticket.EmployeeId" />
+                                                <button type="submit" class="btn btn-primary btn-sm" style="margin-left:35%;">Solved</button>
+                                            }
+                                    </div>
+                                </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        }
+    </div>
+
+
+    @if (Model?.result?.ErrorMessage != null)
+    {
+        <div class="alert-popup show" id="ErrorPopup">
+            <p><i class="fas fa-exclamation-triangle"></i> @Model.result.ErrorMessage</p>
+        </div>
+    }
+    @if (Model?.result?.Message != null)
+    {
+        <div class="Message-popup show" id="MessagePopup">
+            <p><i class="fas fa-check-circle"></i>@Model.result.Message</p>
+        </div>
+    }
+
+    <!-- Ticket Details Popup -->
+    <div id="ticketPopup" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="ticketDetailsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById("ticketPopup");
+            var span = document.getElementsByClassName("close")[0];
+            var showPopupBtns = document.querySelectorAll('.show-popup-btn');
+
+            var errorAlert = document.getElementById('ErrorPopup');
+            var messageAlert = document.getElementById('MessagePopup');
+            
+
+
+            if (errorAlert) {
+                errorAlert.classList.add('show');
+                setTimeout(function () {
+                    errorAlert.classList.remove('show');
+                }, 2500);
+            } 
+            if (messageAlert) {
+                messageAlert.classList.add('show');
+                setTimeout(function () {
+                    messageAlert.classList.remove('show');
+                }, 2500);
+            }
+
+
+            // Show ticket details in the modal
+            showPopupBtns.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var ticketId = this.getAttribute('data-ticket-id');
+                    var description = this.getAttribute('data-ticket-description');
+                    var status = this.getAttribute('data-ticket-status');
+                    var createdAt = this.getAttribute('data-ticket-created');
+                    var resolvedAt = this.getAttribute('data-ticket-resolved');
+
+
+
+                    var content = 
+                    `
+                        <p>Description: ${description}</p>
+                        <p>Status: ${status}</p>
+                        <p>Created at: ${createdAt}</p>
+                        <p>Resolved at: ${resolvedAt}</p>
+                    `;
+
+
+
+
+                    document.getElementById("ticketDetailsContent").innerHTML = content;
+                    modal.style.display = "block";
+                });
+            });
+
+            // Close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // Close the modal if clicked outside
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+﻿@model E_starta.Models.RegularModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="~/RegularStyleSheet.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/AlertPopupStyleSheet.css" rel="stylesheet" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    @if (Model == null)
+    {
+        <div class="alert alert-danger" role="alert">Error: No data available.</div>
+    }
+    else
+    {
+        <div class="container">
+            <!-- Button to toggle form visibility -->
+            <button type="button" class="btn btn-primary" id="toggleFormBtn">Create Ticket</button>
+
+            <!-- Form for creating a ticket -->
+            @using (Html.BeginForm("CreateTicket", "Regular", FormMethod.Post))
+            {
+                <input type="hidden" name="Id" value="@Model.user.Id" />
+                <div class="form-container mt-4" id="CreateTicketForm" style="display: none;">
+                    <div class="form-group">
+                        <label asp-for="@Model.ticket.Title" class="form-label">Title</label>
+                        <input asp-for="@Model.ticket.Title" class="form-control" name="Title" placeholder="Title" />
+
+                        <label asp-for="@Model.ticket.Description" class="form-label">Description</label>
+                        <input asp-for="@Model.ticket.Description" class="form-control" name="Description" placeholder="Description" />
+
+                        <button type="submit" class="btn btn-primary mt-2" id="CreateTicketFormButton">Submit</button>
+                        <button type="button" class="btn btn-danger mt-2" id="CloseTicketButton">Close</button>
+                    </div>
+                </div>
+            }
+
+            <!-- Table to display tickets -->
+            <div class="mt-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Solved At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in Model.tickets)
+                            {
+                                <tr>
+                                    <td>@ticket.Title</td>
+                                    <td>@ticket.Description</td>
+                                    <td>@ticket.Status</td>
+                                    <td>@ticket.CreatedAt</td>
+                                    <td>@(ticket.ResolvedAt.HasValue ? ticket.ResolvedAt.ToString() : "Still not solved")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @if (Model?.result?.ErrorMessage != null)
+    {
+        <div class="alert-popup show" id="ErrorPopup">
+            <p><i class="fas fa-exclamation-triangle"></i> @Model.result.ErrorMessage</p>
+        </div>
+    }
+    @if (Model?.result?.Message != null)
+    {
+        <div class="Message-popup show" id="MessagePopup">
+            <p>
+                <i class="fas fa-check-circle"></i>
+                @Model.result.Message
+            </p>
+        </div>
+    }
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var createTicketFormButton = document.getElementById("toggleFormBtn");
+            var closeTicketFormButton = document.getElementById("CloseTicketButton");
+            var createTicketForm = document.getElementById("CreateTicketForm");
+
+
+            var errorAlert = document.getElementById('ErrorPopup');
+            var messageAlert = document.getElementById('MessagePopup');
+
+
+
+            if (errorAlert) {
+                errorAlert.classList.add('show');
+                setTimeout(function () {
+                    errorAlert.classList.remove('show');
+                }, 2500);
+            }
+            if (messageAlert) {
+                messageAlert.classList.add('show');
+                setTimeout(function () {
+                    messageAlert.classList.remove('show');
+                }, 2500);
+            }
+
+
+
+
+            function toggleForm() {
+                createTicketForm.style.display = createTicketForm.style.display === "none" ? "block" : "none";
+            }
+
+            createTicketFormButton.addEventListener('click', toggleForm);
+            closeTicketFormButton.addEventListener('click', function () {
+                createTicketForm.style.display = 'none';
+            });
+        });
+    </script>
+
+</body>
+</html>
